@@ -3,12 +3,12 @@ using UnityEngine;
 
 public class CoinCollectorUI : MonoBehaviour
 {
-    [SerializeField] private CoinCollector _coinCollector;
+    [SerializeField] private CoinCollector coinCollector;
     [SerializeField] private TextMeshProUGUI coinCount;
 
     private void Start()
     {
-        _coinCollector.OnUpdate += UpdateUI; 
+        coinCollector.OnUpdate += UpdateUI; 
     }
 
     private void UpdateUI(CoinCollector coinCollector)
@@ -18,9 +18,9 @@ public class CoinCollectorUI : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (_coinCollector != null)
+        if (coinCollector != null)
         {
-            _coinCollector.OnUpdate -= UpdateUI;
+            coinCollector.OnUpdate -= UpdateUI;
         }
     }
 }

@@ -1,3 +1,4 @@
+using Photon.Pun;
 using UnityEngine;
 
 public class CoinSpawner : MonoBehaviour
@@ -24,6 +25,6 @@ public class CoinSpawner : MonoBehaviour
     private void spawnCoin()
     {
         Vector2 spawnPosition = new Vector2(Random.Range(cameraMin.x, cameraMax.x), Random.Range(cameraMin.y, cameraMax.y));
-        Instantiate(coinPrefab, spawnPosition, Quaternion.identity);
+        PhotonNetwork.Instantiate(coinPrefab.name, spawnPosition, Quaternion.identity);
     }
 }

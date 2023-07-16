@@ -3,9 +3,9 @@ using UnityEngine;
 
 public class PopUpUI : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI _playerName;
-    [SerializeField] private TextMeshProUGUI _coins;
-    [SerializeField] private GameObject _panel;
+    [SerializeField] private TextMeshProUGUI playerName;
+    [SerializeField] private TextMeshProUGUI coins;
+    [SerializeField] private GameObject panel;
     
     private float _healthValue;
     
@@ -16,9 +16,9 @@ public class PopUpUI : MonoBehaviour
     
     public void DisplayWinner(int coins, string playerName)
     {
-        _panel.SetActive(true);
-        _playerName.text = playerName;
-        _coins.text = coins.ToString();
+        panel.SetActive(true);
+        this.playerName.text = playerName;
+        this.coins.text = coins.ToString();
     }
     
     private void OnDestroy()
@@ -28,6 +28,4 @@ public class PopUpUI : MonoBehaviour
             GameManager.Instance.Finished -= DisplayWinner;
         }
     }
-    
-    
 }

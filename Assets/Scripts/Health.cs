@@ -1,4 +1,5 @@
 using System;
+using Photon.Pun;
 using UnityEngine;
 
 public class Health : MonoBehaviour
@@ -6,11 +7,13 @@ public class Health : MonoBehaviour
     [SerializeField] private int maxHealth = 100;
     
     private int _currentHealth;
+    private PhotonView _photonView;
     
     public event Action<float, float> OnUpdate;
 
     private void Start()
     {
+        _photonView = GetComponent<PhotonView>();
         _currentHealth = maxHealth;
         OnUpdate?.Invoke(maxHealth, maxHealth);
     }
@@ -36,6 +39,13 @@ public class Health : MonoBehaviour
     {
         Debug.Log("Player is dead");
         GameManager.Instance.RemovePlayer(GetComponent<Player>());
-        Destroy(gameObject);
+        // PhotonNetwork.Destroy(gameObject);
+        _photonView.RPC(nameof(DestroyPlayer), RpcTarget.All);
+    }
+    
+    [PunRPC]
+    private void DestroyPlayer()
+    {
+        PhotonNetwork.Destroy(gameObject);
     }
 }

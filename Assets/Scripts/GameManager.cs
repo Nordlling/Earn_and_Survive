@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance{ get; private set;}
+    public static GameManager Instance{get; private set;}
+
+    [SerializeField] private FixedJoystick joystick;
+    [SerializeField] private ShootButtonHandler shootButtonHandler;
     
     private List<Player> _players;
     private bool _isStarted;
@@ -50,5 +53,15 @@ public class GameManager : MonoBehaviour
     public void RemovePlayer(Player player)
     {
         _players.Remove(player);
+    }
+
+    public FixedJoystick GetJoystick()
+    {
+        return joystick;
+    }
+    
+    public ShootButtonHandler GetShootButtonHandler()
+    {
+        return shootButtonHandler;
     }
 }
