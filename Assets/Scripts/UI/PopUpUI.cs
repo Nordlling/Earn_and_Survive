@@ -1,7 +1,8 @@
+using Photon.Pun;
 using TMPro;
 using UnityEngine;
 
-public class PopUpUI : MonoBehaviour
+public class PopUpUI : MonoBehaviourPunCallbacks
 {
     [SerializeField] private TextMeshProUGUI playerName;
     [SerializeField] private TextMeshProUGUI coins;
@@ -11,21 +12,20 @@ public class PopUpUI : MonoBehaviour
     
     private void Start()
     {
-        GameManager.Instance.Finished += DisplayWinner;
+        panel.SetActive(false);
     }
     
-    public void DisplayWinner(int coins, string playerName)
+    private void DisplayWinner(int coins, string playerName)
     {
         panel.SetActive(true);
         this.playerName.text = playerName;
         this.coins.text = coins.ToString();
     }
     
-    private void OnDestroy()
+    public override void OnPlayerPropertiesUpdate(Photon.Realtime.Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
     {
-        if (GameManager.Instance != null)
-        {
-            GameManager.Instance.Finished -= DisplayWinner;
+        if (targetPlayer != null) {
+            DisplayWinner((int)changedProps["Coins"], (string)changedProps["Name"]);
         }
     }
 }

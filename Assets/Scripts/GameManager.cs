@@ -1,58 +1,97 @@
-using System;
 using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class GameManager : MonoBehaviour
+public class GameManager : MonoBehaviourPunCallbacks
 {
     public static GameManager Instance{get; private set;}
 
     [SerializeField] private FixedJoystick joystick;
     [SerializeField] private ShootButtonHandler shootButtonHandler;
     
-    private List<Player> _players;
-    private bool _isStarted;
-
-    public event Action<int, string> Finished;
+    public List<Player> LivePlayers { get; private set; }
+    public List<Player> DeadPlayers { get; private set; }
+    public List<GameObject> Coins { get; private set; }
+    
+    public GameObject CurrentPlayer { get; set; }
+    public bool IsStarted { get; private set; }
 
     private void Awake()
     {
-        _players = new List<Player>();
+        if (Instance != null)
+        {
+            Destroy(this);
+        }
+        LivePlayers = new List<Player>();
+        DeadPlayers = new List<Player>();
+        Coins = new List<GameObject>();
+        PhotonNetwork.AutomaticallySyncScene = true;
         Instance = this;
     }
 
     private void Update()
     {
-        if (!_isStarted && _players.Count > 1)
+        if (!IsStarted && LivePlayers.Count > 1)
         {
-            StartGame();
-            _isStarted = true;
+            IsStarted = true;
         }
-        else if (_isStarted && _players.Count < 2)
+        else if (IsStarted && LivePlayers.Count == 1)
         {
+            IsStarted = false;
             FinishGame();
         }
     }
 
-    private void StartGame()
-    {
-        
-    }
-    
     private void FinishGame()
     {
-        int coinCount = _players[0].GetComponent<CoinCollector>().CoinCount;
-        string playerName = _players[0].Name;
-        Finished?.Invoke(coinCount, playerName);
+        string playerName = LivePlayers[0].Name;
+        if (!string.IsNullOrEmpty(playerName))
+        {
+            int coinCount = LivePlayers[0].GetComponent<CoinCollector>().CoinCount;
+            ExitGames.Client.Photon.Hashtable playerProperties = new ExitGames.Client.Photon.Hashtable();
+            playerProperties["Name"] = playerName;
+            playerProperties["Coins"] = coinCount;
+            PhotonNetwork.SetPlayerCustomProperties(playerProperties);
+        }
+        Invoke(nameof(RestartLevel), 3f);
+    }
+    
+    private void RestartLevel()
+    {
+        foreach (var coin in Coins)
+        {
+            PhotonNetwork.Destroy(coin);
+        }
+        PhotonNetwork.Destroy(LivePlayers[0].gameObject);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+    
+    public void AddCoin(GameObject coin)
+    {
+        Coins.Add(coin);
+    }
+    
+    public void RemoveCoin(GameObject coin)
+    {
+        Coins.Remove(coin);
     }
 
     public void AddPlayer(Player player)
     {
-        _players.Add(player);
+        LivePlayers.Add(player);
     }
 
     public void RemovePlayer(Player player)
     {
-        _players.Remove(player);
+        LivePlayers.Remove(player);
+        DeadPlayers.Remove(player);
+    }
+    
+    public void KillPlayer(Player player)
+    {
+        LivePlayers.Remove(player);
+        DeadPlayers.Add(player);
     }
 
     public FixedJoystick GetJoystick()
@@ -63,5 +102,15 @@ public class GameManager : MonoBehaviour
     public ShootButtonHandler GetShootButtonHandler()
     {
         return shootButtonHandler;
+    }
+    
+    public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer)
+    {
+        Debug.Log("Player " + newPlayer.NickName + " connected.");
+    }
+
+    public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
+    {
+        Debug.Log("Player " + otherPlayer.NickName + " disconnected.");
     }
 }

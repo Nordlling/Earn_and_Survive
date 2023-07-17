@@ -17,7 +17,7 @@ public class PlayerMovement : MonoBehaviour
         _weapon = GetComponent<Weapon>();
     }
 
-    private void Update()
+    private void LateUpdate()
     {
         if (!_photonView.IsMine)
         {
@@ -25,7 +25,7 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        if (_joystick == null)
+        if (_joystick == null || !GameManager.Instance.IsStarted)
         {
             return;
         }
@@ -41,16 +41,5 @@ public class PlayerMovement : MonoBehaviour
         {
             transform.rotation = Quaternion.LookRotation(Vector3.forward, movement);
         }
-
-        // KEYBOARD
-        // float moveX = Input.GetAxis("Horizontal");
-        // float moveY = Input.GetAxis("Vertical");
-        // if (Input.GetButtonDown("Fire1"))
-        // {
-        //     if (_weapon != null)
-        //     {
-        //         _weapon.Attack();
-        //     }
-        // }
     }
 }

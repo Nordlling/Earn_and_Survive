@@ -6,9 +6,23 @@ public class CoinCollectorUI : MonoBehaviour
     [SerializeField] private CoinCollector coinCollector;
     [SerializeField] private TextMeshProUGUI coinCount;
 
-    private void Start()
+    private bool _subscribed;
+
+    private void Update()
     {
-        coinCollector.OnUpdate += UpdateUI; 
+       Subscribe(); 
+    }
+
+    private void Subscribe()
+    {
+        if (_subscribed || GameManager.Instance.CurrentPlayer == null)
+        {
+            return;
+        }
+
+        CoinCollector player = GameManager.Instance.CurrentPlayer.GetComponent<CoinCollector>();
+        player.OnUpdate += UpdateUI;
+        _subscribed = true;
     }
 
     private void UpdateUI(CoinCollector coinCollector)

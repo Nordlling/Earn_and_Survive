@@ -175,6 +175,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3f4f040a43d003459be54817c6aa068, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spriteRenderer: {fileID: 5101353431895264593}
+  fieldColor: {r: 0, g: 0, b: 0, a: 0}
+  colorOffset: 1
 --- !u!114 &5101353432640519810
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -275,9 +278,9 @@ MonoBehaviour:
     ExtrapolateNumberOfStoredPositions: 1
   m_RotationModel:
     SynchronizeEnabled: 1
-    InterpolateOption: 1
-    InterpolateRotateTowardsSpeed: 180
-    InterpolateLerpSpeed: 5
+    InterpolateOption: 2
+    InterpolateRotateTowardsSpeed: 5000
+    InterpolateLerpSpeed: 40
   m_ScaleModel:
     SynchronizeEnabled: 0
     InterpolateOption: 0
@@ -294,7 +297,7 @@ GameObject:
   - component: {fileID: 5101353432741841489}
   - component: {fileID: 5101353432741841488}
   - component: {fileID: 5101353432741841491}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Weapon
   m_TagString: Weapon
   m_Icon: {fileID: 0}
@@ -394,7 +397,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6381179449000905104}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Point
   m_TagString: Untagged
   m_Icon: {fileID: 0}
